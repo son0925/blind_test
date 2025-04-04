@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .quiz-container { margin-top: 20px; }
+        .answer { display: none; font-weight: bold; color: blue; }
+        .nav-btn { margin: 10px; padding: 5px 15px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<h1>퀴즈</h1>
+<div class="quiz-container">
+    <h2 th:text="${test.name}"></h2>
+
+    <div id="quiz-section">
+        <p><strong>질문:</strong> <span id="question"></span></p>
+        <p>
+            <strong>답변:</strong>
+            <span id="answer" class="answer"></span>
+        </p>
+        <button id="toggle-answer-btn">정답 확인</button>
+    </div>
+
+    <button class="nav-btn" onclick="prevQuestion()">⬅️ 이전</button>
+    <button class="nav-btn" onclick="nextQuestion()">다음 ➡️</button>
+</div>
+
+<a href="/category">홈으로</a>
+
+<script th:inline="javascript">
+    let quizzes;
+
+    try {
+        quizzes = [[${test.testEntityList}]];
+        if (typeof quizzes === "string") {
+            quizzes = JSON.parse(quizzes);
+        }
+        console.log("✅ 퀴즈 데이터 확인 (원본):", quizzes);
+    } catch (error) {
+        console.error("❌ 오류 발생: quizzes 데이터를 가져올 수 없음.", error);
+        quizzes = [];
+    }
+
+    // 랜덤 셔플 함수 (Fisher-Yates 알고리즘)
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            let j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    // 퀴즈 섞기
+    if (quizzes.length > 0) {
+        shuffleArray(quizzes);
+        console.log("🔀 퀴즈 데이터 셔플 완료:", quizzes);
+    }
+
+    let currentIndex = 0;
+
+    function displayQuestion() {
+        if (!quizzes || quizzes.length === 0) {
+            console.warn("⚠️ 퀴즈 데이터가 없습니다.");
+            document.getElementById("question").innerText = "퀴즈가 없습니다.";
+            document.getElementById("answer").innerText = "";
+            return;
+        }
+
+        let quiz = quizzes[currentIndex];
+
+        if (quiz) {
+            console.log("📌 현재 문제:", quiz);
+            document.getElementById("question").innerText = quiz.question;
+            document.getElementById("answer").innerText = quiz.answer;
+            document.getElementById("answer").style.display = "none"; // 페이지 이동 시 정답 숨기기
+        }
+    }
+
+    function prevQuestion() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            displayQuestion();
+        }
+    }
+
+    function nextQuestion() {
+        if (currentIndex < quizzes.length - 1) {
+            currentIndex++;
+            displayQuestion();
+        }
+    }
+
+    // 정답 버튼 클릭 이벤트
+    document.getElementById("toggle-answer-btn").addEventListener("click", function () {
+        let answerEl = document.getElementById("answer");
+        if (answerEl.style.display === "none") {
+            answerEl.style.display = "inline"; // 정답 표시
+        } else {
+            answerEl.style.display = "none"; // 정답 숨기기
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        displayQuestion();
+    });
+</script>
+
+</body>
+</html>

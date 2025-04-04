@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Blind Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        ul { list-style-type: none; padding: 0; }
+        li { margin: 10px; }
+        a { text-decoration: none; color: blue; font-size: 18px; }
+    </style>
+</head>
+<body>
+<h1>카테고리 목록</h1>
+<ul>
+    <li th:each="category : ${categoryList}">
+        <a th:href="@{/category/quiz/{id}(id=${category.categoryId})}" th:text="${category.name}"></a>
+    </li>
+</ul>
+</body>
+</html>
