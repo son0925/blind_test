@@ -17,6 +17,8 @@ public class TestEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long testId;
 
+    private String imageUrl;
+
     private String question;
 
     private String answer;

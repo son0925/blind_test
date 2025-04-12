@@ -29,7 +29,13 @@ public class CategoryService {
 
 
     public void createTest(Long categoryId, TestRequest request) {
+        // TODO Valid 작업하기
+        if (request.getQuestion().isEmpty() || request.getAnswer().isEmpty()) {
+            throw new RuntimeException("단어가 존재하지 않음");
+        }
+
         TestEntity entity = TestEntity.builder()
+                .imageUrl(request.getImageUrl())
                 .question(request.getQuestion())
                 .answer(request.getAnswer())
                 .category(findByIdWithThrow(categoryId))

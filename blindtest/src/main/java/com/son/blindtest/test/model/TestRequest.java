@@ -9,6 +9,8 @@ import lombok.*;
 @Builder
 public class TestRequest {
 
+    private String imageUrl;
+
     private String question;
 
     private String answer;
